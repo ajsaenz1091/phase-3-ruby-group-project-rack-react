@@ -17,9 +17,19 @@ class Application
                 end
                 # USER AUTHENTICATION COME BACK TO
             elsif req.path.match(/users/)
-                return [200, { "Content-Type" => "application/json" }, [{ :data => User.all}.to_json]]
-            elsif req.path.match(/courses/)
-                return [200, { "Content-Type" => "application/json" }, [{ :data => Course.all}.to_json]]
+                name = req.params["q"]
+                user = User.find_by(:name => name)
+                # binding.pry
+                return [200, { "Content-Type" => "application/json" }, [{:user => user, :userCourses => user.courses}.to_json]]
+                #DELETE COURSES 
+            elsif req.delete?
+
+                id = req.path.split("/courses/").last
+                Course.find(id).delete
+            
+                return [200, { 'Content-Type' => 'application/json' }, [ {:message => "Task deleted!"}.to_json ]]
+                # course = Course.find(id)
+                # return [200, { "Content-Type" => "application/json" }, [{ :data => Course.all}.to_json]]
             #         
             #  elsif req.path.match(/contacts/)
             #      return [200, { "Content-Type" => "application/json" }, [{ :message => "User does not exist"}]]
